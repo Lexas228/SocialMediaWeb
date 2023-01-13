@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "ru.social.media.web.proto.common_types";
+option java_outer_classname = "CommonTypeProto";
+
+message VoidMessage{
+
+}
+
+message StringMessage{
+  string value = 1;
+}
+
+message IntMessage{
+  int32 value = 1;
+}
+
+message LongMessage{
+  int64 value = 1;
+}

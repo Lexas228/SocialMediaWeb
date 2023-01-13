@@ -1,0 +1,44 @@
+syntax = "proto3";
+import "ru/social/media/web/proto/common_types/CommonTypes.proto";
+
+option java_multiple_files = true;
+option java_package = "ru.social.media.web.proto.user_service";
+option java_outer_classname = "UserServiceProto";
+
+
+service UserService {
+  rpc login (LoginRequest) returns (User){}
+  rpc register (RegisterRequest) returns (VoidMessage){}
+  rpc authenticate(StringMessage) returns(User){}
+}
+
+message LoginRequest {
+  string loginOrEmail = 1;
+  string password = 2;
+}
+
+message AuthenticateRequest{
+  string token = 1;
+}
+
+message RegisterRequest{
+  string login = 1;
+  string password = 2;
+  string confirmPassword = 3;
+  string email = 4;
+}
+
+message User {
+  int64 userId = 1;
+  repeated Role roles = 2;
+  string token = 3;
+}
+
+message Role{
+  string name = 1;
+  repeated Privilege privileges = 2;
+}
+
+message Privilege{
+  string name = 1;
+}
