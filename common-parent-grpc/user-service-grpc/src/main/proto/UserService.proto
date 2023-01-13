@@ -1,5 +1,5 @@
 syntax = "proto3";
-import "ru/social/media/web/proto/common_types/CommonTypes.proto";
+import "CommonTypes.proto";
 
 option java_multiple_files = true;
 option java_package = "ru.social.media.web.proto.user_service";
@@ -8,7 +8,7 @@ option java_outer_classname = "UserServiceProto";
 
 service UserService {
   rpc login (LoginRequest) returns (User){}
-  rpc register (RegisterRequest) returns (VoidMessage){}
+  rpc register (RegisterRequest) returns (User){}
   rpc authenticate(StringMessage) returns(User){}
 }
 

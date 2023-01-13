@@ -1,21 +1,41 @@
 package ru.social.media.web.userservice.service;
 
-import io.grpc.stub.StreamObserver;
-import ru.social.media.web.proto.user_service.*;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import ru.social.media.web.userservice.model.UserEntity;
+import ru.social.media.web.userservice.repository.UserRepository;
 
-public class UserService extends UserServiceGrpc.UserServiceImplBase {
+import java.util.regex.Pattern;
+
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class UserService implements UserDetailsService {
+    UserRepository userRepository;
+
     @Override
-    public void login(LoginRequest request, StreamObserver<User> responseObserver) {
-        super.login(request, responseObserver);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity userEntity;
+        if(isEmail(username)){
+            userEntity = userRepository.findByEmail(username).orElse(null);
+        }else{
+            userEntity = userRepository.findByLogin(username).orElse(null);
+        }
+        if(userEntity == null){
+            throw new UsernameNotFoundException("Username with email or login " + username + " was not found");
+        }
+        return userEntity;
     }
 
-    @Override
-    public void register(RegisterRequest request, StreamObserver<ru.social.media.web.proto.common_types.VoidMessage> responseObserver) {
-        super.register(request, responseObserver);
-    }
 
-    @Override
-    public void authenticate(StringMessage request, StreamObserver<User> responseObserver) {
-        super.authenticate(request, responseObserver);
+
+    private boolean isEmail(String value){
+        String pattern = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+        return Pattern.compile(pattern).matcher(value).matches();
     }
 }
